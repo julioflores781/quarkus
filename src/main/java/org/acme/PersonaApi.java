@@ -1,11 +1,10 @@
 package org.acme;
 
+import io.smallrye.common.constraint.NotNull;
 import org.acme.entity.Persona;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.transaction.Transactional;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
@@ -18,34 +17,31 @@ public class PersonaApi {
 
 
 
-    Persona julio = new Persona("95742604","Julio","Flores");
+    Persona julio = new Persona("Julio","Flores");
 
-
-
-    Persona juliet = new Persona("55742604","juliet","Flores");
-    Persona joharlis = new Persona("95830925","joharlis","zarraga");
-    Persona alejandro = new Persona("95555555","alejandro","Medina");
+    Persona juliet = new Persona("juliet","Flores");
+    Persona joharlis = new Persona("joharlis","zarraga");
+    Persona alejandro = new Persona("alejandro","Medina");
 
 
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getPersonas() {
-
-    personas.add(julio);
-    personas.add(juliet);
-    personas.add(joharlis);
-    personas.add(alejandro);
+        List<Persona>  personas = Persona.findAll().list();
         return Response.ok(personas).build();
     }
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)
-    public Response setPersonas() {
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Transactional
+    public Response save(@NotNull Persona persona) {
 
-        Persona Carolina = new Persona("111111","Carolina","Arnal");
+        Persona persona1 = new Persona(persona.getNombre(), persona.getApellido());
+        persona1.persist();
 
 
-        return Response.ok(personas.add(Carolina)).build();
+        return Response.ok(persona1).build();
     }
 }

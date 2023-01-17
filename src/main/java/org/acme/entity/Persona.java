@@ -1,35 +1,32 @@
 package org.acme.entity;
 
-public class Persona {
+import io.quarkus.hibernate.orm.panache.PanacheEntity;
 
-    private String dni;
+import javax.persistence.Entity;
+
+@Entity
+public class Persona extends PanacheEntity {
+
+    private Integer id =1;
     private String nombre;
     private String apellido;
 
+    public Persona(){
+        id+=1;
+    }
+    public Persona(String nombre, String apellido){
+        super();
+        this.nombre = nombre;
+        this.apellido = apellido;
 
-    public Persona(){}
-
-    public Persona(String dni,String nombre, String apellido){
-        this.dni = dni;
-        this.nombre=nombre;
-        this.apellido=apellido;
     }
 
-
-    public String getDni() {
-        return dni;
+    public Integer getId() {
+        return id;
     }
 
-    @Override
-    public String toString() {
-        return
-                "dni:'" + dni + '\''  +
-                ", nombre:'" + nombre + '\'' +
-                ", apellido:'" + apellido + '\'' +'\n' ;
-    }
-
-    public void setDni(String dni) {
-        this.dni = dni;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getNombre() {
@@ -45,8 +42,6 @@ public class Persona {
     }
 
     public void setApellido(String apellido) {
-        this.apellido = apellido;
+        apellido = apellido;
     }
-
-
 }
