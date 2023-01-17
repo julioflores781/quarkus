@@ -11,13 +11,11 @@ import java.util.List;
 
 @Path("/Empleado")
 @Produces(MediaType.APPLICATION_JSON)
-@Consumes(MediaType.APPLICATION_JSON)
 public class EmpleadoApi {
 
 
 
     @GET
-    @Path("/All")
     public Response doGet(){
         List<Empleado> empleados =Empleado.findAll().list();
         return Response.ok(empleados).build();
@@ -26,47 +24,66 @@ public class EmpleadoApi {
 
         @GET
         @Path("{id}")
-        @Produces(MediaType.APPLICATION_JSON)
         public Response doGetId(@PathParam("id") Long id){
             Empleado empleado =  Empleado.findById(id);
             return Response.ok(empleado).build();
         }
 
-    @POST
-    @Transactional
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response doPost(Empleado request){
-
-            Empleado empleado = new Empleado(request.getEmpleado_id(), request.getNombre(), request.getApellido(), request.getPuesto_id(), request.getEditorial_id(), request.getFecha_ingreso());
-
-            System.out.println(empleado.toString());
-
-
-            empleado.persist();
-    return Response.ok(empleado).build();
-    }
-
-        @DELETE
-        @Produces(MediaType.APPLICATION_JSON)
-        @Path("{id}")
+        @POST
         @Transactional
-        public Response delete( @PathParam("id") Long id){
+        public Response doPost(Empleado request){
 
-        Empleado empleado =  Empleado.findById(id);
+                Empleado empleado = new Empleado(request.getEmpleado_id(), request.getNombre(), request.getApellido(), request.getPuesto_id(), request.getEditorial_id(), request.getFecha_ingreso());
 
-
-        if (empleado !=null) {
-                 Empleado.deleteById(id);
-                Response.ok().build();
-            }else {
+                System.out.println(empleado.toString());
 
 
-            return Response.notModified().build();
+                empleado.persist();
+        return Response.ok(empleado).build();
         }
 
 
-            return null;
+        @PUT
+        @Path("{id}")
+        @Transactional
+        public Response update( @PathParam("id") Long id,Empleado request){
+        Empleado empleado =  Empleado.findById(id);
+
+
+            if (empleado ==null) {
+                throw new WebApplicationException("Id inexistente",404);
+            }
+            empleado.setEmpleado_id(request.getEmpleado_id());
+            empleado.setNombre(request.getNombre());
+            empleado.setApellido(request.getApellido());
+            empleado.setFecha_ingreso(request.getFecha_ingreso());
+            empleado.setPuesto_id(request.getPuesto_id());
+            empleado.setEditorial_id(request.getEditorial_id());
+
+
+                empleado.persist();
+            return  Response.ok(empleado).build();
+
+
+
+        }
+
+
+        @DELETE
+        @Path("{id}")
+        @Transactional
+        public Response delete( @PathParam("id") Long id){
+        Empleado empleado =  Empleado.findById(id);
+
+
+            if (empleado ==null) {
+                throw new WebApplicationException("Id inexistente",404);
+            }
+                empleado.delete();
+            return  Response.ok("Se elimino Correctamente").build();
+
+
+
         }
 
 
